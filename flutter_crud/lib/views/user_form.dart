@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_crud/routes/app_routes.dart';
 import 'package:flutter_crud/models/user.dart';
 import 'package:flutter_crud/provider/users.dart';
 import 'package:provider/provider.dart';
@@ -55,45 +57,71 @@ class _UserFormState extends State<UserForm> {
       ),
       body: Padding(
         padding: EdgeInsets.all(15),
-        child: Form(
-          key: _form,
-          child: Column(
-            children: <Widget>[
-              TextFormField(
-                initialValue: _formData['name'],
-                decoration: InputDecoration(
-                  labelText: 'Nome',
-                ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Nome é obrigatório';
-                  }
-                  if (value.trim().length < 3) {
-                    return 'Nome precisa de ter mais que 2 caracteres';
-                  }
+        child: Column(
+          children: [
+            IconButton(
+              icon: Icon(Icons.camera_alt),
+              onPressed: () {
+                Navigator.of(context).pushNamed(
+                  AppRoutes.TAKE_PICTURE,
+                );
+              },
+            ),
+            Form(
+              key: _form,
+              child: Column(
+                children: <Widget>[
+                  TextFormField(
+                    initialValue: _formData['name'],
+                    decoration: InputDecoration(
+                      labelText: 'Nome',
+                    ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Nome é obrigatório';
+                      }
+                      if (value.trim().length < 3) {
+                        return 'Nome precisa de ter mais que 2 caracteres';
+                      }
 
-                  return null;
-                },
-                onSaved: (value) => _formData['name'] = value,
+                      return null;
+                    },
+                    onSaved: (value) => _formData['name'] = value,
+                  ),
+                  TextFormField(
+                    initialValue: _formData['email'],
+                    decoration: InputDecoration(
+                      labelText: 'E-mail',
+                    ),
+                    onSaved: (value) => _formData['email'] = value,
+                  ),
+                  TextFormField(
+                    initialValue: _formData['avatarUrl'],
+                    decoration: InputDecoration(
+                      labelText: 'Avatar url',
+                    ),
+                    onSaved: (value) => _formData['avatarUrl'] = value,
+                  ),
+                ],
               ),
-              TextFormField(
-                initialValue: _formData['email'],
-                decoration: InputDecoration(
-                  labelText: 'E-mail',
-                ),
-                onSaved: (value) => _formData['email'] = value,
-              ),
-              TextFormField(
-                initialValue: _formData['avatarUrl'],
-                decoration: InputDecoration(
-                  labelText: 'Avatar url',
-                ),
-                onSaved: (value) => _formData['avatarUrl'] = value,
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
+    );
+  }
+}
+
+// A widget that displays the picture taken by the user.
+class DisplayPictureScreen extends StatelessWidget {
+  final String imagePath;
+
+  const DisplayPictureScreen({Key key, this.imagePath}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Image.file(File(imagePath)),
     );
   }
 }
